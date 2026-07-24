@@ -1,0 +1,9 @@
+variable "storage_account_name" {
+  type = string
+}
+variable "key_vault_name" {
+  type = string
+}
+variable "log_analytics_workspace_name" {
+  type = string
+}
