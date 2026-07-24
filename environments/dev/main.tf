@@ -73,3 +73,21 @@ module "network_security_group_association" {
 
   network_security_group_id = module.network_security_group.nsg_id
 }
+module "bastion_subnet" {
+  source = "../../modules/subnet"
+
+  subnet_name          = "AzureBastionSubnet"
+  resource_group_name  = module.resource_group.resource_group_name
+  virtual_network_name = module.virtual_network.vnet_name
+  address_prefixes     = ["10.0.2.0/26"]
+}
+module "bastion" {
+  source = "../../modules/bastion"
+
+  bastion_name        = "dev-bastion"
+  public_ip_name      = "dev-bastion-pip"
+  resource_group_name = module.resource_group.resource_group_name
+  location            = module.resource_group.resource_group_location
+
+  bastion_subnet_id = module.bastion_subnet.subnet_id
+}
