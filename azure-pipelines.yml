@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Starter pipeline
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
@@ -17,3 +18,42 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+=======
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  workingDirectory: 'environments/dev'
+
+steps:
+- checkout: self
+
+- script: |
+    terraform --version
+  displayName: 'Terraform Version'
+
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+  displayName: 'Install Terraform'
+
+- script: |
+    cd $(workingDirectory)
+    terraform init
+  displayName: 'Terraform Init'
+
+- script: |
+    cd $(workingDirectory)
+    terraform validate
+  displayName: 'Terraform Validate'
+
+- script: |
+    cd $(workingDirectory)
+    terraform plan
+  displayName: 'Terraform Plan'
+>>>>>>> 382925c (Add Azure DevOps YAML pipeline)
