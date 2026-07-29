@@ -12,6 +12,14 @@ module "virtual_network" {
   location            = "Central India"
   address_space       = ["10.0.0.0/16"]
 }
+module "hub_virtual_network" {
+  source = "../../modules/virtual_network"
+
+  vnet_name           = "hub-vnet"
+  resource_group_name = module.resource_group.resource_group_name
+  location            = "Central India"
+  address_space       = ["10.1.0.0/16"]
+}
 module "subnet" {
   source = "../../modules/subnet"
 
@@ -90,4 +98,20 @@ module "bastion" {
   location            = module.resource_group.resource_group_location
 
   bastion_subnet_id = module.bastion_subnet.subnet_id
+}
+module "dev_to_hub_peering" {
+  source = "../../modules/vnet_peering"
+
+  peering_name              = "dev-to-hub"
+  resource_group_name       = module.resource_group.resource_group_name
+  virtual_network_name      = module.virtual_network.vnet_name
+  remote_virtual_network_id = module.hub_virtual_network.vnet_id
+}
+module "hub_to_dev_peering" {
+  source = "../../modules/vnet_peering"
+
+  peering_name              = "hub-to-dev"
+  resource_group_name       = module.resource_group.resource_group_name
+  virtual_network_name      = module.hub_virtual_network.vnet_name
+  remote_virtual_network_id = module.virtual_network.vnet_id
 }

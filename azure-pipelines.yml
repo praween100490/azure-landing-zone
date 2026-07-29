@@ -3,36 +3,40 @@ trigger:
     include:
       - main
 
-pool:
-  vmImage: ubuntu-latest
-
 variables:
   workingDirectory: environments/dev
+stages:
+- stage: Validate
+  displayName: "Terraform Validate"
 
-steps:
-- checkout: self
+  jobs:
+  - job: Validate
+    displayName: "Validate Terraform"
 
-- script: |
-    wget https://releases.hashicorp.com/terraform/1.13.0/terraform_1.13.0_linux_amd64.zip
-    unzip terraform_1.13.0_linux_amd64.zip
-    sudo mv terraform /usr/local/bin/
-    terraform --version
-  displayName: Install Terraform
-  
-- script: terraform --version
-  displayName: Terraform Version
+    pool:
+      vmImage: ubuntu-latest
 
-- script: |
-    cd $(workingDirectory)
-    terraform init
-  displayName: Terraform Init
+    steps:
+    - checkout: self
 
-- script: |
-    cd $(workingDirectory)
-    terraform validate
-  displayName: Terraform Validate
+    - script: |
+        wget https://releases.hashicorp.com/terraform/1.13.0/terraform_1.13.0_linux_amd64.zip
+        unzip terraform_1.13.0_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+        terraform --version
+      displayName: Install Terraform
 
-- script: |
-    cd $(workingDirectory)
-    terraform plan
-  displayName: Terraform Plan
+    - script: terraform --version
+      displayName: Terraform Version
+
+    - script: |
+        cd $(workingDirectory)
+        terraform init
+      displayName: Terraform Init
+
+    - script: |
+        cd $(workingDirectory)
+        terraform validate
+      displayName: Terraform Validate
+
+    
