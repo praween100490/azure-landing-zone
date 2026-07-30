@@ -39,4 +39,37 @@ stages:
         terraform validate
       displayName: Terraform Validate
 
-    
+
+
+
+
+- stage: Plan
+  displayName: "Terraform Plan"
+  dependsOn: Validate
+
+  jobs:
+  - job: Plan
+    displayName: "Terraform Plan"
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+    - checkout: self
+
+    - script: |
+        wget https://releases.hashicorp.com/terraform/1.13.0/terraform_1.13.0_linux_amd64.zip
+        unzip terraform_1.13.0_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+        terraform --version
+      displayName: Install Terraform
+
+    - script: |
+        cd $(workingDirectory)
+        terraform init
+      displayName: Terraform Init
+
+    - script: |
+        cd $(workingDirectory)
+        terraform plan
+      displayName: Terraform Plan
